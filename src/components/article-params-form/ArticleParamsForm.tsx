@@ -5,8 +5,9 @@ import { RadioGroup } from '../radio-group/RadioGroup';
 import { Select } from '../select/Select';
 import { Separator } from '../separator';
 import { Text } from '../text';
+import clsx from 'clsx';
 
-import { fontFamilyOptions, fontColors, backgroundColors, contentWidthArr, fontSizeOptions, ArticleStateType, } from 'src/constants/articleProps';
+import { fontFamilyOptions, fontColors, backgroundColors, contentWidthArr, fontSizeOptions, ArticleStateType, defaultArticleState } from 'src/constants/articleProps';
 
 import styles from './ArticleParamsForm.module.scss';
 
@@ -34,7 +35,8 @@ export const ArticleParamsForm = ({ appState, setAppState }: Props) => {
 
 	const resetForm = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		setFormState(appState);
+		setAppState(defaultArticleState);
+		setFormState(defaultArticleState);
 	};
 
 	const submitForm = (event: React.FormEvent<HTMLFormElement>) => {
@@ -43,35 +45,29 @@ export const ArticleParamsForm = ({ appState, setAppState }: Props) => {
 	};
 
 	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				ref.current &&
+				!(ref.current as HTMLDivElement).contains(event.target as Node | null)
+			) {
+				setOpen(false);
+			}
+		};
+
 		if (open) {
-			document.addEventListener('mousedown', (event) => {
-				handleClickOutside(event);
-			});
+			document.addEventListener('mousedown', handleClickOutside);
 		}
 		return () => {
-			document.removeEventListener('mousedown', (event) => {
-				handleClickOutside(event);
-			});
+			document.removeEventListener('mousedown', handleClickOutside);
 		};
 	}, [open]);
-
-	const handleClickOutside = (event: MouseEvent) => {
-		if (
-			ref.current &&
-			!(ref.current as HTMLDivElement).contains(event.target as Node | null)
-		) {
-			setOpen(false);
-		}
-	};
 
 	return (
 		<>
 			<ArrowButton openStatus={changeOpenStatus} open={open} />
 			<aside
 				ref={ref}
-				className={
-					styles.container + (open ? ` ${styles.container_open}` : '')
-				}>
+				className={clsx(styles.container, open && styles.container_open)}>
 				<form onSubmit={submitForm} onReset={resetForm} className={styles.form}>
 					<Text as='h2' size={31} weight={800}>
 						ЗАДАЙТЕ ПАРАМЕТРЫ
