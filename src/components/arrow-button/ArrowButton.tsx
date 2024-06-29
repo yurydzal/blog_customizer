@@ -1,4 +1,5 @@
 import arrow from 'src/images/arrow.svg';
+import clsx from 'clsx';
 
 import styles from './ArrowButton.module.scss';
 
@@ -17,12 +18,12 @@ export const ArrowButton = ({ openStatus, open }: Props) => {
 			role='button'
 			aria-label='Открыть/Закрыть форму параметров статьи'
 			tabIndex={0}
-			className={styles.container + (open ? ` ${styles.container_open}` : '')}
+			className={clsx(styles.container, open && styles.container_open)}
 			onClick={openStatus}>
 			<img
 				src={arrow}
 				alt='иконка стрелочки'
-				className={styles.arrow + (open ? ` ${styles.arrow_open}` : '')}
+				className={clsx(styles.arrow, open && styles.arrow_open)}
 			/>
 		</div>
 	);
